@@ -10,12 +10,13 @@
             </router-link>
           </p>
           VALIDATION ERRORS
-          <form>
+          <form @submit.prevent="onSubmit">
             <fieldset class="form-group">
               <input
                 class="form-control form-control-lg"
                 type="text"
                 placeholder="Username"
+                v-model="username"
               />
             </fieldset>
             <fieldset class="form-group">
@@ -23,6 +24,7 @@
                 class="form-control form-control-lg"
                 type="text"
                 placeholder="Email"
+                v-model="email"
               />
             </fieldset>
             <fieldset class="form-group">
@@ -30,9 +32,13 @@
                 class="form-control form-control-lg"
                 type="password"
                 placeholder="Password"
+                v-model="password"
               />
             </fieldset>
-            <button class="btn btn-lg btn-primary pull-xs-right">
+            <button
+              class="btn btn-lg btn-primary pull-xs-right"
+              :disabled="isSubmitting"
+            >
               Sign Up
             </button>
           </form>
@@ -44,6 +50,33 @@
 
 <script>
 export default {
-  name: 'McvRegister'
+  name: 'McvRegister',
+  data() {
+    return {
+      email: '',
+      username: '',
+      password: ''
+    }
+  },
+  computed: {
+    isSubmitting() {
+      return this.$store.state.auth.isSubmitting
+    }
+  },
+  methods: {
+    onSubmit() {
+      this.$store
+        .dispatch('register', {
+          email: this.email,
+          username: this.username,
+          password: this.password
+        })
+        .then(user => {
+          console.log(user)
+
+          this.$router.push({name: 'home'})
+        })
+    }
+  }
 }
 </script>
